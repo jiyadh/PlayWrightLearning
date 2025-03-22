@@ -43,9 +43,7 @@ pipeline {
 
     post {
         always {
-            node {
-                archiveArtifacts artifacts: '**/test-results/*.xml', allowEmptyArchive: true
-            }
+            archiveArtifacts artifacts: '**/test-results/*.xml', allowEmptyArchive: true
         }
     }
 }
