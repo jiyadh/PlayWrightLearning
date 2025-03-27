@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        NODEJS_HOME = tool name: 'NodeJS Latest', type: 'NodeJSInstallation'
+        NODEJS_HOME = tool name: 'NodeJS_Latest', type: 'NodeJSInstallation'
         PATH = "${env.NODEJS_HOME}/bin:${env.PATH}"
     }
 
@@ -13,36 +13,35 @@ pipeline {
             }
         }
 
-        stage('Verify PATH and NodeJS') {
-            steps {
-                echo "PATH: ${env.PATH}"
-                sh 'node --version'
-                sh 'npm --version'
-            }
-        }
-
-        stage('Install Dependencies') {
+        stage('Setup Node.js and Playwright') {
             steps {
                 script {
-                    // Install npm dependencies
-                    sh 'npm install'
+                    echo "Verifying Node.js and npm installation..."
+                    bat 'node --version'
+                    bat 'npm --version'
+                    
+                    echo "Installing project dependencies..."
+                    bat 'npm install'
+                    
+                    echo "Installing Playwright dependencies and browsers..."
+                    bat 'npx playwright install'
                 }
             }
         }
 
-        stage('Run Tests') {
+        stage('Run Playwright Tests') {
             steps {
                 script {
-                    // Run Playwright tests
-                    sh 'npx playwright test'
+                    echo "Running Playwright tests..."
+                    bat 'npx playwright test'
                 }
             }
         }
 
-        stage('Publish Results') {
+        stage('Publish Test Results') {
             steps {
                 script {
-                    // Publish test results
+                    echo "Publishing test results..."
                     junit '**/test-results/*.xml'
                 }
             }
@@ -51,6 +50,7 @@ pipeline {
 
     post {
         always {
+            echo "Archiving test results..."
             archiveArtifacts artifacts: '**/test-results/*.xml', allowEmptyArchive: true
         }
     }
