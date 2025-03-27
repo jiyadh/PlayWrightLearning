@@ -13,6 +13,14 @@ pipeline {
             }
         }
 
+        stage('Verify PATH and NodeJS') {
+            steps {
+                echo "PATH: ${env.PATH}"
+                sh 'node --version'
+                sh 'npm --version'
+            }
+        }
+
         stage('Install Dependencies') {
             steps {
                 script {
