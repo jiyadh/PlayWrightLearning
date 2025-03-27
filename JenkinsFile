@@ -19,10 +19,10 @@ pipeline {
                     echo "Verifying Node.js and npm installation..."
                     bat 'node --version'
                     bat 'npm --version'
-                    
+
                     echo "Installing project dependencies..."
                     bat 'npm install'
-                    
+
                     echo "Installing Playwright dependencies and browsers..."
                     bat 'npx playwright install'
                 }
@@ -50,8 +50,10 @@ pipeline {
 
     post {
         always {
-            echo "Archiving test results..."
-            archiveArtifacts artifacts: '**/test-results/*.xml', allowEmptyArchive: true
+            node {
+                echo "Archiving test results..."
+                archiveArtifacts artifacts: '**/test-results/*.xml', allowEmptyArchive: true
+            }
         }
     }
 }
