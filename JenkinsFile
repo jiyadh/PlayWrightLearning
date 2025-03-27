@@ -43,7 +43,7 @@ pipeline {
             steps {
                 script {
                     echo "Publishing test results..."
-                    junit '**/test-results/*.xml'
+                    junit 'test-results/results.xml' // Updated path
                 }
             }
         }
@@ -52,8 +52,7 @@ pipeline {
     post {
         always {
             echo "Archiving test results..."
-            archiveArtifacts artifacts: '**/test-results/*.xml', allowEmptyArchive: true
-            junit '**/test-results/*.xml'
+            archiveArtifacts artifacts: 'test-results/results.xml', allowEmptyArchive: true
         }
     }
 }
