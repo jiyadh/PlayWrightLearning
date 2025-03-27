@@ -52,6 +52,7 @@ pipeline {
         always {
             echo "Archiving test results..."
             archiveArtifacts artifacts: '**/test-results/*.xml', allowEmptyArchive: true
+            junit '**/test-results/*.xml'
         }
     }
 }
