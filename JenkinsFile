@@ -1,0 +1,57 @@
+pipeline {
+    agent any
+
+    environment {
+        NODEJS_HOME = tool name: 'NodeJS_Latest', type: 'NodeJSInstallation'
+        PATH = "${env.NODEJS_HOME}/bin:${env.PATH}"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/jiyadh/PlayWrightLearning.git'
+            }
+        }
+
+        stage('Setup Node.js and Playwright') {
+            steps {
+                script {
+                    echo "Verifying Node.js and npm installation..."
+                    bat 'node --version'
+                    bat 'npm --version'
+
+                    echo "Installing project dependencies..."
+                    bat 'npm install'
+
+                    echo "Installing Playwright dependencies and browsers..."
+                    bat 'npx playwright install'
+                }
+            }
+        }
+
+        stage('Run Playwright Tests') {
+            steps {
+                script {
+                    echo "Running Playwright tests..."
+                    bat 'npx playwright test'
+                }
+            }
+        }
+
+        stage('Publish Test Results') {
+            steps {
+                script {
+                    echo "Publishing test results..."
+                    junit '**/test-results/*.xml'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "Archiving test results..."
+            archiveArtifacts artifacts: '**/test-results/*.xml', allowEmptyArchive: true
+        }
+    }
+}
