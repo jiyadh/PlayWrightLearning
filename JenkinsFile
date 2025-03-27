@@ -1,10 +1,11 @@
 pipeline {
     agent any
 
-    // environment {
-    //     NODEJS_HOME = tool name: 'NodeJS_Latest', type: 'NodeJSInstallation'
-    //     PATH = "${env.NODEJS_HOME}/bin:${env.PATH}"
-    // }
+    environment {
+        // NODEJS_HOME = tool name: 'NodeJS_Latest', type: 'NodeJSInstallation'
+        // PATH = "${env.NODEJS_HOME}/bin:${env.PATH}"
+        PLAYWRIGHT_BROWSERS_PATH = './.playwright-cache' // Cache Playwright browsers
+    }
 
     stages {
         stage('Checkout') {
@@ -21,7 +22,7 @@ pipeline {
                     bat 'npm --version'
 
                     echo "Installing project dependencies..."
-                    bat 'npm install'
+                    bat 'npm ci'
 
                     echo "Installing Playwright dependencies and browsers..."
                     bat 'npx playwright install'
